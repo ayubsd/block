@@ -1,0 +1,53 @@
+#include <windows.h>
+#include <wincrypt.h>
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <sstream>
+ 
+using namespace std;
+ 
+// Helper function to handle the SHA-256 logic
+string computeSHA256(const string& data) {
+	HCRYPTPROV hProv = 0;
+	HCRYPTHASH hHash = 0;
+	BYTE hashResult[32];
+	DWORD hashLen = 32;
+	stringstream ss;
+ 
+	if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+    	if (CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash)) {
+        	CryptHashData(hHash, (const BYTE*)data.c_str(), (DWORD)data.length(), 0);
+        	if (CryptGetHashParam(hHash, HP_HASHVAL, hashResult, &hashLen, 0)) {
+            	for (DWORD i = 0; i < hashLen; i++) {
+                	ss << hex << setw(2) << setfill('0') << (int)hashResult[i];
+            	}
+        	}
+        	CryptDestroyHash(hHash);
+    	}
+    	CryptReleaseContext(hProv, 0);
+	}
+	return ss.str();
+}
+ 
+int main() {
+	// Question 1
+	cout << "Question 1" << endl;
+	cout << "string : any string" << endl;
+	cout << "Hash : " << computeSHA256("any string") << endl << endl;
+ 
+	// Question 2
+	cout << "Question 2" << endl;
+	cout << "String : Blockchain Developer" << endl;
+	cout << "Hash : " << computeSHA256("Blockchain Developer") << endl << endl;
+ 
+	// Question 3
+	cout << "Question 3:" << endl;
+	cout << "String : Hello World" << endl;
+	cout << "Hash : " << computeSHA256("Hello World") << endl << endl;
+ 
+	cout << "String : Hello world" << endl;
+	cout << "Hash : " << computeSHA256("Hello world") << endl;
+ 
+	return 0;
+}
