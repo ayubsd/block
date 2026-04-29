@@ -1,0 +1,15 @@
+import hashlib
+
+message = "Hello World"
+hash_value = hashlib.sha256(message.encode()).hexdigest()
+
+print("Message    :", message)
+print("SHA-256    :", hash_value)
+
+
+hash_utf8   = hashlib.sha256(message.encode('utf-8')).hexdigest()
+hash_bytes  = hashlib.sha256(b"Hello World").hexdigest()
+print("UTF-8 hash :", hash_utf8)
+print("Bytes hash :", hash_bytes)
+print("Match?     :", hash_utf8 == hash_bytes)
+
