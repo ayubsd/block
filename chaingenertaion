@@ -1,0 +1,46 @@
+import hashlib, time
+
+DIFFICULTY = "00"   # hash must start with "00"
+
+class Block:
+    def __init__(self, index, data, previous_hash):
+        self.index = index
+        self.data = data
+        self.previous_hash = previous_hash
+        self.timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        self.nonce = 0
+        self.hash = self.mine()
+
+    def compute_hash(self):
+        content = f"{self.index}{self.data}{self.previous_hash}{self.timestamp}{self.nonce}"
+        return hashlib.sha256(content.encode()).hexdigest()
+
+    def mine(self):
+        h = self.compute_hash()
+        while not h.startswith(DIFFICULTY):
+            self.nonce += 1
+            h = self.compute_hash()
+        return h
+
+class Blockchain:
+    def __init__(self):
+        self.chain = [Block(0, "Genesis", "0")]
+
+    def add(self, data):
+        b = Block(len(self.chain), data, self.chain[-1].hash)
+        self.chain.append(b)
+
+    def print_chain(self):
+        for b in self.chain:
+            print(f"Index        : {b.index}")
+            print(f"Data         : {b.data}")
+            print(f"Nonce        : {b.nonce}")
+            print(f"Hash         : {b.hash}")
+            print(f"Previous Hash: {b.previous_hash}")
+            print("-" * 50)
+
+bc = Blockchain()
+bc.add("A -> B: 100")
+bc.add("B -> C: 60")
+bc.add("C -> D: 40")
+bc.print_chain()
