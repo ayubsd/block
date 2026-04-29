@@ -1,0 +1,42 @@
+import hashlib, time, json
+
+class Block:
+    def __init__(self, index, transactions, previous_hash):
+        self.index = index
+        self.timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        self.transactions = transactions
+        self.previous_hash = previous_hash
+        self.hash = self.compute_hash()
+
+    def compute_hash(self):
+        data = json.dumps({
+            "index": self.index,
+            "timestamp": self.timestamp,
+            "transactions": self.transactions,
+            "previous_hash": self.previous_hash
+        }, sort_keys=True)
+        return hashlib.sha256(data.encode()).hexdigest()
+
+class Blockchain:
+    def __init__(self):
+        genesis = Block(0, ["Genesis Block"], "0")
+        self.chain = [genesis]
+
+    def add_block(self, transactions):
+        prev = self.chain[-1]
+        b = Block(len(self.chain), transactions, prev.hash)
+        self.chain.append(b)
+
+    def print_chain(self):
+        for b in self.chain:
+            print(f"Block {b.index}")
+            print(f"  Time       : {b.timestamp}")
+            print(f"  Tx         : {b.transactions}")
+            print(f"  Prev Hash  : {b.previous_hash[:20]}...")
+            print(f"  Hash       : {b.hash[:20]}...")
+            print()
+
+bc = Blockchain()
+bc.add_block(["Akshita -> Vishal: 50"])
+bc.add_block(["Vishal -> Siddhi: 30"])
+bc.print_chain()
