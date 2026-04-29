@@ -1,0 +1,56 @@
+$ curl -sSL https://bit.ly/2ysbOFE | bash -s
+
+$ cd fabric-samples/test-network
+ 
+$ ./network.sh up 
+
+$ docker ps
+
+$ ./network.sh down
+
+$ ./network.sh up createChannel -c mychannel
+
+
+$ ./network.sh deployCC -ccn basic \
+     -ccp ../asset-transfer-basic/chaincode-go \
+     -ccl go
+
+$ export PATH=${PWD}/../bin:$PATH
+$ export FABRIC_CFG_PATH=$PWD/../config/
+$ export CORE_PEER_LOCALMSPID='Org1MSP'
+$ export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+$ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+$ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+
+$ peer chaincode invoke \
+     -o localhost:7050 \
+     -C mychannel -n basic \
+     -c '{"function":"InitLedger","Args":[]}'
+
+$ peer chaincode query \
+     -C mychannel -n basic \
+
+Output:
+
+
+Question 3:Write a contract to transfer funds between users. 
+Code:
+
+$ export CORE_PEER_LOCALMSPID='Org1MSP'
+$ export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+$ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+$ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+
+$ peer chaincode invoke \
+     -o localhost:7050 \
+     -C mychannel -n basic \
+     -c '{"function":"CreateAsset","Args":["asset10","blue","10","Alice","500"]}'
+
+$ export CORE_PEER_LOCALMSPID='Org2MSP'
+$ export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
+$ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+$ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+
+$ peer chaincode query \
+     -C mychannel -n basic \
+     -c '{"Args":["ReadAsset","asset10"]}'
