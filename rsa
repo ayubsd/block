@@ -1,0 +1,30 @@
+import math
+
+p, q = 17, 11          
+e, M = 7, 8           
+n   = p * q            
+phi = (p - 1) * (q - 1)
+
+print(f"p = {p}, q = {q}")
+print(f"n = p × q = {n}")
+print(f"φ(n) = (p-1)(q-1) = {phi}")
+print(f"e = {e}  (gcd(e, φ(n)) = {math.gcd(e, phi)})")
+
+
+def mod_inverse(e, phi):
+    for d in range(1, phi):
+        if (e * d) % phi == 1:
+            return d
+
+d = mod_inverse(e, phi)
+print(f"d = {d}  (private key exponent)")
+
+
+C = pow(M, e, n)
+print(f"\nEncrypt: C = {M}^{e} mod {n} = {C}")
+
+
+M_dec = pow(C, d, n)
+print(f"Decrypt: M = {C}^{d} mod {n} = {M_dec}")
+print(f"\nOriginal M = {M}  |  Decrypted = {M_dec}")
+print("Success!" if M == M_dec else "Error: mismatch!")
