@@ -1,0 +1,60 @@
+Practical 9 : Implement a smart contract using solidity programming language.
+
+CODE : 
+!pip install py-solc-x web3 eth-tester
+from solcx import install_solc
+install_solc('0.8.0')
+
+1. Implement a smart contract using solidity programming language
+from solcx import compile_source, set_solc_version
+set_solc_version('0.8.0')
+contract_code = '''
+pragma solidity ^0.8.0;
+contract SimpleStorage {
+    uint public data;
+    function setData(uint _data) public {
+        data = _data;
+    }
+    function getData() public view returns(uint) {
+        return data;
+    }
+}
+'''
+compiled = compile_source(contract_code)
+compiled
+
+2. Create a contract to store student name and age. (Use: - string and uint )
+
+student_contract = '''
+pragma solidity ^0.8.0;
+contract Student {
+    string public name;
+    uint public age;
+    function setStudent(string memory _name, uint _age) public {
+        name = _name;
+        age = _age;
+    }
+    function getStudent() public view returns(string memory, uint) {
+        return (name, age);
+    }
+}
+'''
+compiled_student = compile_source(student_contract)
+compiled_student
+3. Write a contract to transfer funds between users.
+
+fund_contract = '''
+pragma solidity ^0.8.0;
+
+contract FundTransfer {
+    address payable public receiver;
+    constructor(address payable _receiver) {
+        receiver = _receiver;
+    }
+    function transferFunds() public payable {
+        receiver.transfer(msg.value);
+    }
+}
+'''
+compiled_fund = compile_source(fund_contract)
+compiled_fund
